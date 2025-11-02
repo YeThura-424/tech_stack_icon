@@ -1,0 +1,13 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="esbuild">
+<g id="esbuild_2" clip-path="url(#clip0_790_4350)">
+<path id="Vector" d="M50 100C77.6142 100 100 77.6142 100 50C100 22.3858 77.6142 0 50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100Z" fill="#FFCF00"/>
+<path id="Vector_2" d="M27.0645 22.9355L54.1293 50L27.0645 77.0645L20.4355 70.4356L40.8707 50L20.4355 29.5645L27.0645 22.9355ZM57.0645 22.9355L84.1293 50L57.0645 77.0645L50.4355 70.4356L70.8707 50L50.4355 29.5645L57.0645 22.9355Z" fill="#191919"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_790_4350">
+<rect width="100" height="100" fill="white"/>
+</clipPath>
+</defs>
+</svg>

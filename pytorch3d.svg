@@ -1,0 +1,13 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="pytorch3d">
+<g id="pytorch3d_2">
+<path id="Vector" d="M65.4368 0H6V100H65.4368L94.3046 50L65.4368 0ZM78.6552 39.0058L64.6034 30.8966V14.6724L78.6552 39.0058ZM81.5977 50L64.6034 59.8103V40.1897L81.5977 50ZM56.5575 8.04598V26.2529L25.0345 8.04598H56.5575ZM14.0287 10.9885L56.5575 35.5402V64.454L14.0287 89.0058V10.9885ZM56.5575 73.7471V91.954H25.0345L56.5575 73.7471ZM64.6034 85.3218V69.1034L78.6552 60.9885L64.6034 85.3218Z" fill="url(#paint0_linear_790_6857)"/>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_790_6857" x1="62.8966" y1="21.8391" x2="40.4828" y2="68.1035" gradientUnits="userSpaceOnUse">
+<stop offset="0.148474" stop-color="#812CE5"/>
+<stop offset="1" stop-color="#FFAF00"/>
+</linearGradient>
+</defs>
+</svg>

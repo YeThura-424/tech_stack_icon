@@ -1,0 +1,13 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="shadcnui">
+<g id="shadcnui_2" clip-path="url(#clip0_790_6990)">
+<path id="Vector" d="M81.25 50L50 81.25" stroke="white" stroke-width="6.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_2" d="M75 15.625L15.625 75" stroke="white" stroke-width="6.25" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_790_6990">
+<rect width="100" height="100" fill="white"/>
+</clipPath>
+</defs>
+</svg>

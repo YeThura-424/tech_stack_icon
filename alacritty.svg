@@ -1,0 +1,38 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="alacritty">
+<g id="alacritty_2" clip-path="url(#clip0_790_3646)">
+<g id="layer1">
+<g id="g4199">
+<path id="path5352" fill-rule="evenodd" clip-rule="evenodd" d="M43.0721 60.6137L40.8984 65.8802C46.7392 83.8657 46.7392 83.8657 49.9998 99.555C53.2605 83.8657 53.2605 83.8657 59.1012 65.8802L56.9276 60.6137L49.9998 43.8284L43.0721 60.6137Z" fill="#069EFE"/>
+<path id="path5336" fill-rule="evenodd" clip-rule="evenodd" d="M42.3334 4.46882H57.6665L91.6182 88.7321H77.3804L49.9999 24.3744L22.6194 88.7321H8.38159L42.3334 4.46882Z" fill="url(#paint0_linear_790_3646)"/>
+<g id="Clip path group">
+<mask id="mask0_790_3646" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="40" y="43" width="20" height="58">
+<g id="clipPath3639">
+<path id="path3641" d="M40.8984 66.4166L49.9998 43.8284L59.1012 66.4166L49.9998 100.911L40.8984 66.4166Z" fill="white"/>
+</g>
+</mask>
+<g mask="url(#mask0_790_3646)">
+<g id="path9580" filter="url(#filter0_f_790_3646)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49.9998 78.2177L77.1718 10.4947L22.8279 10.7731L49.9998 78.2177Z" fill="white"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_790_3646" x="18.5555" y="6.22239" width="62.8887" height="76.2677" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="2.13617" result="effect1_foregroundBlur_790_3646"/>
+</filter>
+<linearGradient id="paint0_linear_790_3646" x1="50.1368" y1="4.46883" x2="50.0102" y2="95.5786" gradientUnits="userSpaceOnUse">
+<stop stop-color="#EC2802"/>
+<stop offset="1" stop-color="#FCB200"/>
+</linearGradient>
+<clipPath id="clip0_790_3646">
+<rect width="100" height="100" fill="white"/>
+</clipPath>
+</defs>
+</svg>

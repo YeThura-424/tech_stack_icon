@@ -1,0 +1,17 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="affinitypublisher" clip-path="url(#clip0_790_3631)">
+<g id="affinitypublisher_2">
+<path id="Vector" fill-rule="evenodd" clip-rule="evenodd" d="M100 9.76477C100 4.37493 95.6242 -0.000854492 90.2344 -0.000854492H9.76562C4.37578 -0.000854492 0 4.37493 0 9.76477V90.2335C0 95.6234 4.37578 99.9991 9.76562 99.9991H90.2344C95.6242 99.9991 100 95.6234 100 90.2335V9.76477Z" fill="#891B26"/>
+<path id="Vector_2" fill-rule="evenodd" clip-rule="evenodd" d="M45.1973 92.3507L20.0215 48.762L7 71.3066V88.4445C7 90.6004 8.75 92.3507 10.9062 92.3507H45.1973ZM63.5557 92.3507H49.0401C49.0401 92.3507 30.2363 59.7836 23.9365 48.8881C22.7031 46.7543 22.7021 44.1157 23.9355 41.9815C26.2139 38.0393 29.2012 32.8692 29.2012 32.8692L63.5557 92.3507ZM81.9141 92.3507H67.3984L31.335 29.1741L38.3799 16.9779L81.9141 92.3507ZM92.3516 78.6376V88.4445C92.3516 90.6004 90.6016 92.3507 88.4453 92.3507H85.7569L40.3008 13.6516L44.1436 6.99915H50.9746L92.3516 78.6376ZM88.4453 6.99915H54.8164L92.3516 71.9851V10.9054C92.3516 8.74944 90.6016 6.99915 88.4453 6.99915Z" fill="url(#paint0_radial_790_3631)"/>
+</g>
+</g>
+<defs>
+<radialGradient id="paint0_radial_790_3631" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(72.2295 -9.04188) scale(101.393)">
+<stop stop-color="#FFAE71"/>
+<stop offset="1" stop-color="#FF9350"/>
+</radialGradient>
+<clipPath id="clip0_790_3631">
+<rect width="100" height="100" fill="white"/>
+</clipPath>
+</defs>
+</svg>
