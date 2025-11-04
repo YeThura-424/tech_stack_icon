@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Icon Playground</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Icon Playground</h1>
+    <p>Browse, preview, recolor, resize, copy or download the repository icons. Designed to be hosted via GitHub Pages from the <code>docs/</code> folder.</p>
+  </header>
+
+  <section class="controls single">
+    <label>Category
+      <select id="category">
+        <option value="">Select category</option>
+      </select>
+    </label>
+
+    <label>Icon
+      <select id="icon" disabled>
+        <option value="">Select icon</option>
+      </select>
+    </label>
+
+    <label>Size
+      <input id="size" type="range" min="8" max="1024" value="128" />
+      <span id="sizeValue">128</span>px
+    </label>
+
+    <label>Color
+      <input id="color" type="color" value="#111827"/>
+    </label>
+  </section>
+
+  <main class="preview-area">
+    <div id="preview" class="preview" aria-live="polite">
+      <p class="help">Choose a category and an icon to preview.</p>
+    </div>
+
+    <div class="preview-actions">
+      <button id="copyBtn" disabled>Copy SVG</button>
+      <button id="downloadBtn" disabled>Download SVG</button>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
