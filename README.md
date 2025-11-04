@@ -23,7 +23,7 @@ Below are common consumption patterns. Replace `<category-folder>` and `<iconnam
 1) GitHub Pages URL:
 
 ```html
-<img src="https://yethura-424.github.io/tech_stack_icon/<category-folder>/<icon-name.svg>" alt="React logo">
+<img src="https://tech-icon.netlify.app/<category-folder>/<icon-name.svg>" alt="React logo">
 ```
 
 3) Inline SVG (recommended for styling and accessibility):
