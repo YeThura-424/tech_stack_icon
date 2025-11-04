@@ -4,46 +4,67 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Icon Playground</title>
-  <link rel="stylesheet" href="styles.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .icon-preview svg { max-width:100%; height:auto; }
+  </style>
 </head>
-<body>
-  <header>
-    <h1>Icon Playground</h1>
-    <p>Browse, preview, recolor, resize, copy or download the repository icons. Designed to be hosted via GitHub Pages from the <code>docs/</code> folder.</p>
+
+<body class="bg-gray-50 text-gray-900 min-h-screen p-6">
+  <header class="max-w-3xl mx-auto mb-6">
+    <h1 class="text-2xl font-semibold">Tech Stack Icons Playground</h1>
+    <p class="text-gray-600">
+      Preview, copy, and download SVG icons.
+    </p>
   </header>
 
-  <section class="controls single">
-    <label>Category
-      <select id="category">
+  <section class="max-w-3xl mx-auto grid gap-4 md:grid-cols-2">
+    
+    <div>
+      <label class="text-sm font-medium block mb-1">Category</label>
+      <input id="categorySearch" type="text" placeholder="Search category..."
+        class="w-full border rounded-md px-3 py-2 text-sm mb-1 focus:ring focus:border-blue-400">
+      <select id="category"
+        class="w-full border rounded-md px-3 py-2 text-sm bg-white focus:ring focus:border-blue-500">
         <option value="">Select category</option>
       </select>
-    </label>
+    </div>
 
-    <label>Icon
-      <select id="icon" disabled>
+    <div>
+      <label class="text-sm font-medium block mb-1">Icon</label>
+      <input id="iconSearch" type="text" placeholder="Search icon..."
+        class="w-full border rounded-md px-3 py-2 text-sm mb-1 focus:ring focus:border-blue-400">
+      <select id="icon" disabled
+        class="w-full border rounded-md px-3 py-2 text-sm bg-white focus:ring focus:border-blue-500">
         <option value="">Select icon</option>
       </select>
-    </label>
+    </div>
 
-    <label>Size
-      <input id="size" type="range" min="8" max="1024" value="128" />
-      <span id="sizeValue">128</span>px
-    </label>
-
-    <label>Color
-      <input id="color" type="color" value="#111827"/>
-    </label>
   </section>
 
-  <main class="preview-area">
-    <div id="preview" class="preview" aria-live="polite">
-      <p class="help">Choose a category and an icon to preview.</p>
+  <main class="max-w-3xl mx-auto mt-6 p-6 bg-white border rounded-xl shadow-sm">
+
+    <div
+      id="preview"
+      class="icon-preview h-64 flex items-center justify-center bg-gray-100 rounded-lg border">
+      <p class="text-gray-500">Choose an icon to preview</p>
     </div>
 
-    <div class="preview-actions">
-      <button id="copyBtn" disabled>Copy SVG</button>
-      <button id="downloadBtn" disabled>Download SVG</button>
+    <div class="flex gap-3 justify-center mt-4">
+      <button id="copyBtn"
+        class="px-4 py-2 bg-gray-800 text-white rounded-md text-sm disabled:opacity-50"
+        disabled>
+        Copy SVG
+      </button>
+
+      <button id="downloadBtn"
+        class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm disabled:opacity-50"
+        disabled>
+        Download SVG
+      </button>
     </div>
+
   </main>
 
   <script src="app.js"></script>
