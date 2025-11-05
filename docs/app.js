@@ -36,6 +36,8 @@ async function mount() {
   const iconSearch = document.getElementById("iconSearch");
   const copyBtn = document.getElementById("copyBtn");
   const downloadBtn = document.getElementById("downloadBtn");
+  const cdnSnippetEl = document.getElementById("cdnSnippet");
+  const copyUsageBtn = document.getElementById("copyUsageBtn");
 
   let manifest = await loadManifest();
   let categories = Object.keys(manifest).sort();
@@ -98,6 +100,21 @@ async function mount() {
     renderSVG(currentSVGText);
     copyBtn.disabled = false;
     downloadBtn.disabled = false;
+
+    // Build CDN snippet using jsDelivr for this repository
+    try {
+      const filename = iconSel.selectedOptions[0]?.dataset.filename;
+      if (filename) {
+        const owner = 'YeThura-424';
+        const repo = 'img_data';
+        const branch = 'main';
+        const cdnUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${filename}`;
+        if (cdnSnippetEl) cdnSnippetEl.value = cdnUrl;
+        if (copyUsageBtn) copyUsageBtn.disabled = false;
+      }
+    } catch (e) {
+      console.warn('Failed to build CDN snippet', e);
+    }
   });
 
   copyBtn.addEventListener("click", async () => {
@@ -106,6 +123,17 @@ async function mount() {
     copyBtn.textContent = "Copied!";
     setTimeout(() => (copyBtn.textContent = "Copy SVG"), 800);
   });
+
+  if (copyUsageBtn) {
+    copyUsageBtn.addEventListener('click', async () => {
+      const text = cdnSnippetEl?.value || '';
+      if (!text) return;
+      await navigator.clipboard.writeText(text);
+      const prev = copyUsageBtn.textContent;
+      copyUsageBtn.textContent = 'Copied!';
+      setTimeout(() => (copyUsageBtn.textContent = prev), 800);
+    });
+  }
 
   downloadBtn.addEventListener("click", () => {
     let cleaned = sanitizeSVG(currentSVGText)

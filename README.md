@@ -23,7 +23,7 @@ Below are common consumption patterns. Replace `<category-folder>` and `<iconnam
 1) GitHub Pages URL:
 
 ```html
-<img src="https://tech-icon.netlify.app/<category-folder>/<icon-name.svg>" alt="React logo">
+<img src="https://cdn.jsdelivr.net/gh/YeThura-424/img_data@main/<category-folder>/<icon-name>.svg" alt="React logo">
 ```
 
 3) Inline SVG (recommended for styling and accessibility):
@@ -41,7 +41,7 @@ with CSS and adding accessible text.
 4) CSS background-image:
 
 ```css
-.icon-react { background-image: url('/frontend/react.svg'); width: 32px; height: 32px; }
+.icon-react { background-image: url('/<category-folder>/<icon-name>.svg'); width: 32px; height: 32px; }
 ```
 
 ---

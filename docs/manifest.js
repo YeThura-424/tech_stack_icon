@@ -564,6 +564,11 @@ window.ICON_MANIFEST = {
       "filename": "frontend/css3.svg"
     },
     {
+      "name": "elementui",
+      "path": "../frontend/elementui.svg",
+      "filename": "frontend/elementui.svg"
+    },
+    {
       "name": "ember",
       "path": "../frontend/ember.svg",
       "filename": "frontend/ember.svg"
@@ -592,6 +597,11 @@ window.ICON_MANIFEST = {
       "name": "jquery",
       "path": "../frontend/jquery.svg",
       "filename": "frontend/jquery.svg"
+    },
+    {
+      "name": "js",
+      "path": "../frontend/js.svg",
+      "filename": "frontend/js.svg"
     },
     {
       "name": "less",

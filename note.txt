@@ -1,0 +1,19 @@
+to add in readme => generate manifest.js after updating icon , after adding new one
+
+
+I put together a tiny project to make it effortless 
+to grab tech-stack icons — SVGs, direct links, and 
+simple embeds so you can add icons to docs and designs 
+in seconds. Built this because little quality-of-life 
+tools save a lot of time. Tell me which icon you use most! 👇
+
+Demo Link:
+https://tech-icon.netlify.app/docs/
+
+If you’d like to add new one, edit existing or want to contribute icons, you are more than welcome!
+
+Repo Link:
+https://github.com/YeThura-424/tech_stack_icon
+
+#Collaboration #Design
+#Icons #SVG #DeveloperExperience #Frontend
