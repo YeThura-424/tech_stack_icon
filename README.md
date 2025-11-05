@@ -74,3 +74,15 @@ Contributions are welcome. A minimal CONTRIBUTING workflow:
 4. Submit a PR describing which icons you added/changed and why.
 
 ---
+
+## After adding or updating icons
+After you add a new icon file or update an existing one, regenerate the project's icon manifest so the changes are picked up by the docs/site. From the repository root run the generator scripts:
+
+
+```sh
+python .\docs\generate_manifest.py
+```
+
+This will update the manifest file used by the site and tooling. Include the regenerated manifest in your PR.
+
+---
