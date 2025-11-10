@@ -336,6 +336,11 @@ window.ICON_MANIFEST = {
       "name": "snowflake",
       "path": "../database/snowflake.svg",
       "filename": "database/snowflake.svg"
+    },
+    {
+      "name": "sqlite",
+      "path": "../database/sqlite.svg",
+      "filename": "database/sqlite.svg"
     }
   ],
   "design": [
@@ -1356,6 +1361,11 @@ window.ICON_MANIFEST = {
       "filename": "other/leptonai.svg"
     },
     {
+      "name": "linux_mint",
+      "path": "../other/linux_mint.svg",
+      "filename": "other/linux_mint.svg"
+    },
+    {
       "name": "liveblocks",
       "path": "../other/liveblocks.svg",
       "filename": "other/liveblocks.svg"
@@ -1691,6 +1701,11 @@ window.ICON_MANIFEST = {
       "filename": "other/spark.svg"
     },
     {
+      "name": "stack_overflow",
+      "path": "../other/stack_overflow.svg",
+      "filename": "other/stack_overflow.svg"
+    },
+    {
       "name": "statecloud",
       "path": "../other/statecloud.svg",
       "filename": "other/statecloud.svg"
@@ -1906,6 +1921,11 @@ window.ICON_MANIFEST = {
       "name": "bash",
       "path": "../tools/bash.svg",
       "filename": "tools/bash.svg"
+    },
+    {
+      "name": "composer",
+      "path": "../tools/composer.svg",
+      "filename": "tools/composer.svg"
     },
     {
       "name": "deepseek",
