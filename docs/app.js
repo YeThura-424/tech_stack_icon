@@ -56,7 +56,8 @@ async function mount() {
       div.className = "px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer";
       div.textContent = cat;
       div.dataset.value = cat;
-      div.addEventListener("click", () => {
+  // use pointerdown so the handler runs before input blur/hide
+  div.addEventListener("pointerdown", () => {
         categoryInput.value = cat;
         categoryValue.value = cat;
         categoryList.classList.add("hidden");
@@ -68,7 +69,7 @@ async function mount() {
         copyBtn.disabled = true;
         downloadBtn.disabled = true;
         document.getElementById("preview").innerHTML = `<p class=\"text-gray-500\">Choose an icon to preview</p>`;
-        showIconList(manifest[cat].map(i => ({ name: i.name, path: i.path, filename: i.filename || i.name })), "");
+        // showIconList(manifest[cat].map(i => ({ name: i.name, path: i.path, filename: i.filename || i.name })), "");
       });
       categoryList.appendChild(div);
     });
@@ -88,7 +89,8 @@ async function mount() {
       div.textContent = i.name;
       div.dataset.path = i.path;
       div.dataset.filename = i.filename;
-      div.addEventListener("click", async () => {
+  // use pointerdown so selection happens before blur hides the list
+  div.addEventListener("pointerdown", async () => {
         iconInput.value = i.name;
         iconValue.value = i.path;
         iconList.classList.add("hidden");
@@ -124,8 +126,7 @@ async function mount() {
     iconList.classList.remove("hidden");
   }
 
-  // initial category population
-  showCategoryList(categories);
+  // do not show lists on mount; they'll be shown when inputs receive focus
 
   categoryInput.addEventListener("input", () => {
     const val = categoryInput.value.trim();
@@ -137,11 +138,35 @@ async function mount() {
     showCategoryList(filtered);
   });
 
+  // Show full list on focus, hide on blur (short timeout to allow clicks)
+  categoryInput.addEventListener('focus', () => {
+    const val = categoryInput.value.trim();
+    if (!val) showCategoryList(categories);
+    else showCategoryList(categories.filter(c => c.toLowerCase().includes(val.toLowerCase())));
+  });
+  categoryInput.addEventListener('blur', () => {
+    setTimeout(() => categoryList.classList.add('hidden'), 150);
+  });
+
   iconInput.addEventListener("input", () => {
     const cat = categoryValue.value;
     if (!cat || !manifest[cat]) return;
     const list = manifest[cat].map(i => ({ name: i.name, path: i.path, filename: i.filename || i.name }));
     showIconList(list, iconInput.value);
+  });
+
+  // Show icons on focus (if a category is selected), hide on blur
+  iconInput.addEventListener('focus', () => {
+    const cat = categoryValue.value;
+    if (!cat || !manifest[cat]) {
+      iconList.classList.add('hidden');
+      return;
+    }
+    const list = manifest[cat].map(i => ({ name: i.name, path: i.path, filename: i.filename || i.name }));
+    showIconList(list, iconInput.value);
+  });
+  iconInput.addEventListener('blur', () => {
+    setTimeout(() => iconList.classList.add('hidden'), 150);
   });
 
   // hide lists when clicking outside
