@@ -23,35 +23,33 @@
     <section class="max-w-3xl mx-auto grid gap-4 md:grid-cols-2">
       <div>
         <label class="text-sm font-medium block mb-1">Category</label>
-        <input
-          id="categorySearch"
-          type="text"
-          placeholder="Search category..."
-          class="w-full border rounded-md px-3 py-2 text-sm mb-1 focus:outline-none"
-        />
-        <select
-          id="category"
-          class="w-full border rounded-md px-3 py-2 text-sm bg-white focus:outline-none"
-        >
-          <option value="">Select category</option>
-        </select>
+        <div class="relative">
+          <input
+            id="categorySearch"
+            type="text"
+            placeholder="Search category..."
+            autocomplete="off"
+            class="w-full border rounded-md px-3 py-2 text-sm mb-1 focus:outline-none"
+          />
+          <div id="categoryList" class="absolute left-0 right-0 mt-1 bg-white border rounded-md shadow max-h-48 overflow-auto z-10 hidden"></div>
+        </div>
+        <input id="categoryValue" type="hidden" />
       </div>
 
       <div>
         <label class="text-sm font-medium block mb-1">Icon</label>
-        <input
-          id="iconSearch"
-          type="text"
-          placeholder="Search icon..."
-          class="w-full border rounded-md px-3 py-2 text-sm mb-1 focus:outline-none"
-        />
-        <select
-          id="icon"
-          disabled
-          class="w-full border rounded-md px-3 py-2 text-sm bg-white focus:outline-none"
-        >
-          <option value="">Select icon</option>
-        </select>
+        <div class="relative">
+          <input
+            id="iconSearch"
+            type="text"
+            placeholder="Search icon..."
+            autocomplete="off"
+            class="w-full border rounded-md px-3 py-2 text-sm mb-1 focus:outline-none"
+            disabled
+          />
+          <div id="iconList" class="absolute left-0 right-0 mt-1 bg-white border rounded-md shadow max-h-48 overflow-auto z-10 hidden"></div>
+        </div>
+        <input id="iconValue" type="hidden" />
       </div>
     </section>
 

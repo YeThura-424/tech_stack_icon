@@ -1,7 +1,7 @@
 function sanitizeSVG(svgText) {
   return svgText
     .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<!-- Code injected by live-server -->/g, "")
+    .replace(/<!-- Code injected by live-server -->/g, "");
 }
 
 let currentSVGText = null;
@@ -12,7 +12,8 @@ function renderSVG(text) {
   const doc = parser.parseFromString(cleaned, "image/svg+xml");
   const svg = doc.querySelector("svg");
   if (!svg) return;
-  document.getElementById("preview").replaceChildren(svg);
+  const prev = document.getElementById("preview");
+  prev.replaceChildren(svg);
 }
 
 async function loadManifest() {
@@ -21,19 +22,21 @@ async function loadManifest() {
     const s = document.createElement("script");
     s.src = "manifest.js";
     s.onload = () =>
-      window.ICON_MANIFEST
-        ? resolve(window.ICON_MANIFEST)
-        : reject("manifest loaded but no data");
+      window.ICON_MANIFEST ? resolve(window.ICON_MANIFEST) : reject("manifest loaded but no data");
     s.onerror = () => reject("Failed to load manifest.js");
     document.head.appendChild(s);
   });
 }
 
 async function mount() {
-  const catSel = document.getElementById("category");
-  const iconSel = document.getElementById("icon");
-  const catSearch = document.getElementById("categorySearch");
-  const iconSearch = document.getElementById("iconSearch");
+  const categoryInput = document.getElementById("categorySearch");
+  const categoryList = document.getElementById("categoryList");
+  const categoryValue = document.getElementById("categoryValue");
+
+  const iconInput = document.getElementById("iconSearch");
+  const iconList = document.getElementById("iconList");
+  const iconValue = document.getElementById("iconValue");
+
   const copyBtn = document.getElementById("copyBtn");
   const downloadBtn = document.getElementById("downloadBtn");
   const cdnSnippetEl = document.getElementById("cdnSnippet");
@@ -42,83 +45,139 @@ async function mount() {
   let manifest = await loadManifest();
   let categories = Object.keys(manifest).sort();
 
-  function populateCategories(list) {
-    catSel.innerHTML = `<option value="">Select category</option>`;
+  function showCategoryList(list) {
+    categoryList.innerHTML = "";
+    if (!list || list.length === 0) {
+      categoryList.classList.add("hidden");
+      return;
+    }
     list.forEach((cat) => {
-      const option = document.createElement("option");
-      option.value = cat;
-      option.textContent = cat;
-      catSel.appendChild(option);
-    });
-  }
-  populateCategories(categories);
-
-  function populateIcons(cat, filter = "") {
-    iconSel.innerHTML = `<option value="">Select icon</option>`;
-    if (!cat) return;
-
-    manifest[cat]
-      .filter((i) => i.name.toLowerCase().includes(filter.toLowerCase()))
-      .forEach((i) => {
-        const opt = document.createElement("option");
-        opt.value = i.path;
-        opt.textContent = i.name;
-        opt.dataset.filename = i.filename || i.name;
-        iconSel.appendChild(opt);
+      const div = document.createElement("div");
+      div.className = "px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer";
+      div.textContent = cat;
+      div.dataset.value = cat;
+  // use pointerdown so the handler runs before input blur/hide
+  div.addEventListener("pointerdown", () => {
+        categoryInput.value = cat;
+        categoryValue.value = cat;
+        categoryList.classList.add("hidden");
+        // enable and populate icons
+        iconInput.disabled = false;
+        iconInput.value = "";
+        iconValue.value = "";
+        currentSVGText = null;
+        copyBtn.disabled = true;
+        downloadBtn.disabled = true;
+        document.getElementById("preview").innerHTML = `<p class=\"text-gray-500\">Choose an icon to preview</p>`;
+        // showIconList(manifest[cat].map(i => ({ name: i.name, path: i.path, filename: i.filename || i.name })), "");
       });
-
-    iconSel.disabled = false;
+      categoryList.appendChild(div);
+    });
+    categoryList.classList.remove("hidden");
   }
 
-  catSearch.addEventListener("input", () =>
-    populateCategories(
-      categories.filter((c) =>
-        c.toLowerCase().includes(catSearch.value.toLowerCase())
-      )
-    )
-  );
+  function showIconList(list, filter = "") {
+    iconList.innerHTML = "";
+    if (!list || list.length === 0) {
+      iconList.classList.add("hidden");
+      return;
+    }
+    const filtered = list.filter(i => i.name.toLowerCase().includes(filter.toLowerCase()));
+    filtered.forEach((i) => {
+      const div = document.createElement("div");
+      div.className = "px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer flex justify-between items-center";
+      div.textContent = i.name;
+      div.dataset.path = i.path;
+      div.dataset.filename = i.filename;
+  // use pointerdown so selection happens before blur hides the list
+  div.addEventListener("pointerdown", async () => {
+        iconInput.value = i.name;
+        iconValue.value = i.path;
+        iconList.classList.add("hidden");
+        // fetch and render
+        try {
+          const r = await fetch(i.path);
+          currentSVGText = await r.text();
+          renderSVG(currentSVGText);
+          copyBtn.disabled = false;
+          downloadBtn.disabled = false;
 
-  catSel.addEventListener("change", () => {
-    populateIcons(catSel.value);
-    currentSVGText = null;
-    copyBtn.disabled = true;
-    downloadBtn.disabled = true;
-    document.getElementById(
-      "preview"
-    ).innerHTML = `<p class="text-gray-500">Select icon</p>`;
+          // Build CDN snippet using jsDelivr for this repository
+          try {
+            const filename = i.filename;
+            if (filename) {
+              const owner = 'YeThura-424';
+              const repo = 'img_data';
+              const branch = 'main';
+              const cdnUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${filename}`;
+              if (cdnSnippetEl) cdnSnippetEl.value = cdnUrl;
+              if (copyUsageBtn) copyUsageBtn.disabled = false;
+            }
+          } catch (e) {
+            console.warn('Failed to build CDN snippet', e);
+          }
+
+        } catch (err) {
+          console.error('Failed to fetch icon', err);
+        }
+      });
+      iconList.appendChild(div);
+    });
+    iconList.classList.remove("hidden");
+  }
+
+  // do not show lists on mount; they'll be shown when inputs receive focus
+
+  categoryInput.addEventListener("input", () => {
+    const val = categoryInput.value.trim();
+    if (!val) {
+      showCategoryList(categories);
+      return;
+    }
+    const filtered = categories.filter(c => c.toLowerCase().includes(val.toLowerCase()));
+    showCategoryList(filtered);
   });
 
-  iconSearch.addEventListener("input", () =>
-    populateIcons(catSel.value, iconSearch.value)
-  );
+  // Show full list on focus, hide on blur (short timeout to allow clicks)
+  categoryInput.addEventListener('focus', () => {
+    const val = categoryInput.value.trim();
+    if (!val) showCategoryList(categories);
+    else showCategoryList(categories.filter(c => c.toLowerCase().includes(val.toLowerCase())));
+  });
+  categoryInput.addEventListener('blur', () => {
+    setTimeout(() => categoryList.classList.add('hidden'), 150);
+  });
 
-  iconSel.addEventListener("change", async () => {
-    if (!iconSel.value) return;
+  iconInput.addEventListener("input", () => {
+    const cat = categoryValue.value;
+    if (!cat || !manifest[cat]) return;
+    const list = manifest[cat].map(i => ({ name: i.name, path: i.path, filename: i.filename || i.name }));
+    showIconList(list, iconInput.value);
+  });
 
-    const r = await fetch(iconSel.value);
-    currentSVGText = await r.text();
-    renderSVG(currentSVGText);
-    copyBtn.disabled = false;
-    downloadBtn.disabled = false;
-
-    // Build CDN snippet using jsDelivr for this repository
-    try {
-      const filename = iconSel.selectedOptions[0]?.dataset.filename;
-      if (filename) {
-        const owner = 'YeThura-424';
-        const repo = 'img_data';
-        const branch = 'main';
-        const cdnUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${filename}`;
-        if (cdnSnippetEl) cdnSnippetEl.value = cdnUrl;
-        if (copyUsageBtn) copyUsageBtn.disabled = false;
-      }
-    } catch (e) {
-      console.warn('Failed to build CDN snippet', e);
+  // Show icons on focus (if a category is selected), hide on blur
+  iconInput.addEventListener('focus', () => {
+    const cat = categoryValue.value;
+    if (!cat || !manifest[cat]) {
+      iconList.classList.add('hidden');
+      return;
     }
+    const list = manifest[cat].map(i => ({ name: i.name, path: i.path, filename: i.filename || i.name }));
+    showIconList(list, iconInput.value);
+  });
+  iconInput.addEventListener('blur', () => {
+    setTimeout(() => iconList.classList.add('hidden'), 150);
+  });
+
+  // hide lists when clicking outside
+  document.addEventListener('click', (e) => {
+    const target = e.target;
+    if (!categoryList.contains(target) && target !== categoryInput) categoryList.classList.add('hidden');
+    if (!iconList.contains(target) && target !== iconInput) iconList.classList.add('hidden');
   });
 
   copyBtn.addEventListener("click", async () => {
-    let cleaned = sanitizeSVG(currentSVGText)
+    let cleaned = sanitizeSVG(currentSVGText);
     await navigator.clipboard.writeText(cleaned);
     copyBtn.textContent = "Copied!";
     setTimeout(() => (copyBtn.textContent = "Copy SVG"), 800);
@@ -136,11 +195,13 @@ async function mount() {
   }
 
   downloadBtn.addEventListener("click", () => {
-    let cleaned = sanitizeSVG(currentSVGText)
+    let cleaned = sanitizeSVG(currentSVGText);
     const blob = new Blob([cleaned], { type: "image/svg+xml" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = iconSel.selectedOptions[0]?.dataset.filename || "icon.svg";
+    // try to get filename from iconValue path or use iconInput name
+    const filenameFromValue = iconValue.value ? (iconValue.value.split('/').pop() || 'icon.svg') : null;
+    a.download = filenameFromValue || (iconInput.value ? `${iconInput.value}.svg` : "icon.svg");
     a.click();
   });
 }
