@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yethura-424.github.io/img_data/sitemap.xml
