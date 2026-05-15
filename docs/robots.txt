@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yethura-424.github.io/img_data/sitemap.xml
+Sitemap: https://tech-icon.netlify.app/docs/sitemap.xml
