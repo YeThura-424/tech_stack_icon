@@ -1,88 +1,134 @@
-# High‑quality Tech Stack SVG Icons
+# Free Tech Stack SVG Icons for Developers
 
-Collection of high-quality SVG icons for popular developer tools,
-frameworks, cloud providers and design apps. This repository organizes icons by
-category (frontend, backend, database, cloud, devops, ai, design, tools, other)
-and is intended to be used in documentation sites, blogs, dashboards, or
-GitHub Pages.
+A searchable collection of 390+ high-quality SVG icons for popular developer
+tools, frontend frameworks, backend technologies, databases, cloud platforms,
+DevOps tools, AI products, design apps, editors, CLIs, and documentation sites.
 
----
+Browse the live icon playground: https://tech-icon.netlify.app/docs/
 
-## Goals
-- Provide a ready-to-use, categorized collection of SVG tech icons.
-- Make it trivial to use icons in static sites (GitHub Pages) and docs.
-- Provide guidelines for accessibility, optimization and contribution.
-
+Use these free tech icons in documentation, blogs, dashboards, portfolios,
+GitHub READMEs, landing pages, and static sites. Icons are organized by category
+and can be copied as raw SVG, downloaded, or embedded through jsDelivr CDN.
 
 ---
 
-## How to use
-Below are common consumption patterns. Replace `<category-folder>` and `<iconname.svg>` with your needs.
+## Included Icon Categories
 
+- `frontend/` - SVG icons for UI frameworks, JavaScript libraries, CSS tools,
+  and design systems.
+- `backend/` - SVG icons for server frameworks, programming languages,
+  runtimes, and backend tools.
+- `database/` - SVG icons for relational databases, NoSQL databases, caches,
+  and storage tools.
+- `cloud/` - SVG icons for cloud providers, hosting platforms, and cloud
+  services.
+- `devops/` - SVG icons for containers, CI/CD tools, infrastructure, monitoring,
+  and deployment platforms.
+- `ai/` - SVG icons for AI platforms, LLM tools, model providers, and AI
+  developer products.
+- `design/` - SVG icons for design tools, creative apps, and product design
+  workflows.
+- `tools/` - SVG icons for editors, CLIs, utilities, package managers, and
+  developer productivity tools.
+- `other/` - SVG icons that do not fit cleanly into the categories above.
 
-1) GitHub Pages URL:
+Example icon names include `react.svg`, `vuejs.svg`, `nodejs.svg`,
+`postgresql.svg`, `aws.svg`, `docker.svg`, `figma.svg`, and AI-related icons.
+
+---
+
+## How To Use The SVG Icons
+
+Replace `<category-folder>` and `<icon-name>.svg` with the icon you want.
+
+### jsDelivr CDN
 
 ```html
-<img src="https://cdn.jsdelivr.net/gh/YeThura-424/img_data@main/<category-folder>/<icon-name>.svg" alt="React logo">
+<img
+  src="https://cdn.jsdelivr.net/gh/YeThura-424/img_data@main/<category-folder>/<icon-name>.svg"
+  alt="React logo"
+/>
 ```
 
-3) Inline SVG (recommended for styling and accessibility):
+### Inline SVG
 
-Copy the `.svg` contents and paste inline in HTML. This allows changing color
-with CSS and adding accessible text.
+Inline SVG is useful when you need full styling control or accessibility labels.
 
 ```html
 <svg role="img" aria-labelledby="reactTitle" width="32" height="32" viewBox="...">
   <title id="reactTitle">React</title>
-  <!-- rest of svg -->
+  <!-- SVG paths -->
 </svg>
 ```
 
-4) CSS background-image:
+### CSS Background Image
 
 ```css
-.icon-react { background-image: url('/<category-folder>/<icon-name>.svg'); width: 32px; height: 32px; }
+.icon-react {
+  width: 32px;
+  height: 32px;
+  background-image: url("/frontend/react.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
 ```
 
 ---
 
-## Naming conventions and categories
-Files are named with short, lowercase names (no spaces). Examples:
-- `react.svg`, `vuejs.svg`, `nodejs.svg`, `postgresql.svg`, `aws.svg`, `figma.svg`.
+## Why Use This Icon Library?
 
-Top-level category folders and their intended contents:
-- `frontend/` — UI frameworks, libraries, CSS, design systems
-- `backend/` — server frameworks, languages, runtimes
-- `database/` — relational & NoSQL DB logos
-- `cloud/` — cloud providers and platforms
-- `devops/` — container, CI/CD, infra tooling
-- `ai/` — LLM / AI platform logos and models
-- `design/` — design tools and creative apps
-- `tools/` — CLIs, editors, utilities
-- `other/` — uncategorized or ambiguous icons
+- Free SVG tech icons for developer projects and documentation.
+- Categorized folders for frontend, backend, database, cloud, DevOps, AI,
+  design, tools, and other icons.
+- Works with GitHub Pages, Netlify, static HTML, documentation sites, blogs,
+  dashboards, and README files.
+- Easy CDN usage with jsDelivr.
+- Searchable web playground for previewing, copying, and downloading icons.
 
-If an icon is miss-categorized, open an issue or submit a PR. You can also
-suggest category changes.
+---
+
+## Naming Conventions
+
+Icon files use short, lowercase names with no spaces.
+
+Good examples:
+
+- `react.svg`
+- `vuejs.svg`
+- `nodejs.svg`
+- `postgresql.svg`
+- `aws.svg`
+- `figma.svg`
+
+If an icon is missing, duplicated, misspelled, or in the wrong category, please
+open an issue or submit a pull request.
 
 ---
 
 ## Contributing
-Contributions are welcome. A minimal CONTRIBUTING workflow:
-1. Fork the repo.
-2. Add or update icons, following the naming and folder conventions.
-3. Optimize SVGs (optional but recommended) with `svgo`.
-4. Submit a PR describing which icons you added/changed and why.
 
----
+Contributions are welcome.
 
-## After adding or updating icons
-After you add a new icon file or update an existing one, regenerate the project's icon manifest so the changes are picked up by the docs/site. From the repository root run the generator scripts:
+1. Fork the repository.
+2. Add or update icons using the existing category and naming conventions.
+3. Optimize SVG files with `svgo` when possible.
+4. Regenerate the icon manifest.
+5. Submit a pull request describing the icons you added or changed.
 
+After adding or updating icons, run this command from the repository root:
 
 ```sh
 python .\docs\generate_manifest.py
 ```
 
-This will update the manifest file used by the site and tooling. Include the regenerated manifest in your PR.
+This updates the manifest used by the docs site and icon playground. Include the
+updated manifest in your pull request.
 
 ---
+
+## Keywords
+
+SVG icons, tech stack icons, developer icons, programming icons, framework
+icons, frontend icons, backend icons, database icons, cloud icons, DevOps icons,
+AI icons, design tool icons, free SVG icon library, jsDelivr icons, GitHub Pages
+icons, documentation icons.
