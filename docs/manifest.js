@@ -4868,21 +4868,6 @@ window.ICON_MANIFEST = {
   ],
   "languages": [
     {
-      "name": "c#",
-      "filename": "variants/light/c#.svg",
-      "path": "../variants/light/c#.svg",
-      "variants": {
-        "light": {
-          "filename": "variants/light/c#.svg",
-          "path": "../variants/light/c#.svg"
-        },
-        "dark": {
-          "filename": "variants/dark/c#.svg",
-          "path": "../variants/dark/c#.svg"
-        }
-      }
-    },
-    {
       "name": "c++",
       "filename": "variants/light/c++.svg",
       "path": "../variants/light/c++.svg",
