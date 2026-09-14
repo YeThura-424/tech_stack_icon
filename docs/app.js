@@ -1,209 +1,201 @@
-function sanitizeSVG(svgText) {
-  return svgText
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<!-- Code injected by live-server -->/g, "");
-}
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const disclaimer = $('disclaimerDialog');
+  $('disclaimerButton').addEventListener('click', () => disclaimer.showModal());
+  $('closeDisclaimer').addEventListener('click', () => disclaimer.close());
+  disclaimer.addEventListener('close', () => $('disclaimerButton').focus());
+  const { displayName, filterIcons, snippet, variantAsset } = window.IconCatalog;
+  const { cleanSVG, copyText } = window.IconAssets;
+  const manifest = window.ICON_MANIFEST;
+  if (!manifest) {
+    $('resultCount').textContent = 'The icon catalog could not load. Please refresh to try again.';
+    return;
+  }
+  const categories = Object.keys(manifest).sort();
+  const icons = categories.flatMap(category => manifest[category].map(icon => ({ ...icon, category })))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  let category = 'all';
+  let selected = null;
+  let svgText = null;
+  let request = 0;
+  let toastTimer;
+  const categoryNames = window.ICON_CATEGORIES || {};
+  const iconsByName = new Map(icons.map(icon => [icon.name, icon]));
+  let exportMode = 'light';
+  try { exportMode = localStorage.getItem('icon-export-variant') === 'dark' ? 'dark' : 'light'; } catch { /* Use light exports by default. */ }
 
-let currentSVGText = null;
+  function notify(message) {
+    $('toast').textContent = message;
+    $('toast').classList.add('visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => $('toast').classList.remove('visible'), 3500);
+  }
+  function setTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    $('themeToggle').setAttribute('aria-pressed', String(theme === 'dark'));
+    $('themeToggle').textContent = theme === 'dark' ? '☀ Light' : '◐ Dark';
+    document.querySelectorAll('img[data-themed-icon]').forEach(image => {
+      const icon = iconsByName.get(image.dataset.themedIcon);
+      if (icon) image.src = variantAsset(icon, theme).path;
+    });
+    try { localStorage.setItem('icon-theme', theme); } catch { /* Storage is optional. */ }
+  }
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = localStorage.getItem('icon-theme') || theme; } catch { /* Use system preference. */ }
+  setTheme(theme === 'dark' ? 'dark' : 'light');
+  $('themeToggle').addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
 
-function renderSVG(text) {
-  const cleaned = sanitizeSVG(text);
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(cleaned, "image/svg+xml");
-  const svg = doc.querySelector("svg");
-  if (!svg) return;
-  const prev = document.getElementById("preview");
-  prev.replaceChildren(svg);
-}
-
-async function loadManifest() {
-  if (window.ICON_MANIFEST) return window.ICON_MANIFEST;
-  return new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.src = "manifest.js";
-    s.onload = () =>
-      window.ICON_MANIFEST ? resolve(window.ICON_MANIFEST) : reject("manifest loaded but no data");
-    s.onerror = () => reject("Failed to load manifest.js");
-    document.head.appendChild(s);
-  });
-}
-
-async function mount() {
-  const categoryInput = document.getElementById("categorySearch");
-  const categoryList = document.getElementById("categoryList");
-  const categoryValue = document.getElementById("categoryValue");
-
-  const iconInput = document.getElementById("iconSearch");
-  const iconList = document.getElementById("iconList");
-  const iconValue = document.getElementById("iconValue");
-
-  const copyBtn = document.getElementById("copyBtn");
-  const downloadBtn = document.getElementById("downloadBtn");
-  const cdnSnippetEl = document.getElementById("cdnSnippet");
-  const copyUsageBtn = document.getElementById("copyUsageBtn");
-
-  let manifest = await loadManifest();
-  let categories = Object.keys(manifest).sort();
-
-  function showCategoryList(list) {
-    categoryList.innerHTML = "";
-    if (!list || list.length === 0) {
-      categoryList.classList.add("hidden");
-      return;
-    }
-    list.forEach((cat) => {
-      const div = document.createElement("div");
-      div.className = "px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer";
-      div.textContent = cat;
-      div.dataset.value = cat;
-  // use pointerdown so the handler runs before input blur/hide
-  div.addEventListener("pointerdown", () => {
-        categoryInput.value = cat;
-        categoryValue.value = cat;
-        categoryList.classList.add("hidden");
-        // enable and populate icons
-        iconInput.disabled = false;
-        iconInput.value = "";
-        iconValue.value = "";
-        currentSVGText = null;
-        copyBtn.disabled = true;
-        downloadBtn.disabled = true;
-        document.getElementById("preview").innerHTML = `<p class=\"text-gray-500\">Choose an icon to preview</p>`;
-        // showIconList(manifest[cat].map(i => ({ name: i.name, path: i.path, filename: i.filename || i.name })), "");
+  function renderCategories() {
+    $('categories').replaceChildren();
+    for (const value of ['all', ...categories]) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'category-button';
+      button.setAttribute('aria-pressed', String(category === value));
+      const label = document.createElement('span');
+      label.textContent = value === 'all' ? 'All icons' : categoryNames[value] || displayName(value);
+      const count = document.createElement('span');
+      count.className = 'category-count';
+      count.textContent = value === 'all' ? icons.length : manifest[value].length;
+      button.append(label, count);
+      button.addEventListener('click', () => {
+        category = value;
+        [...$('categories').children].forEach((item, index) => item.setAttribute('aria-pressed', String(['all', ...categories][index] === value)));
+        renderGrid();
       });
-      categoryList.appendChild(div);
-    });
-    categoryList.classList.remove("hidden");
-  }
-
-  function showIconList(list, filter = "") {
-    iconList.innerHTML = "";
-    if (!list || list.length === 0) {
-      iconList.classList.add("hidden");
-      return;
+      $('categories').append(button);
     }
-    const filtered = list.filter(i => i.name.toLowerCase().includes(filter.toLowerCase()));
-    filtered.forEach((i) => {
-      const div = document.createElement("div");
-      div.className = "px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer flex justify-between items-center";
-      div.textContent = i.name;
-      div.dataset.path = i.path;
-      div.dataset.filename = i.filename;
-  // use pointerdown so selection happens before blur hides the list
-  div.addEventListener("pointerdown", async () => {
-        iconInput.value = i.name;
-        iconValue.value = i.path;
-        iconList.classList.add("hidden");
-        // fetch and render
-        try {
-          const r = await fetch(i.path);
-          currentSVGText = await r.text();
-          renderSVG(currentSVGText);
-          copyBtn.disabled = false;
-          downloadBtn.disabled = false;
-
-          // Build CDN snippet using jsDelivr for this repository
-          try {
-            const filename = i.filename;
-            if (filename) {
-              const owner = 'YeThura-424';
-              const repo = 'img_data';
-              const branch = 'main';
-              const cdnUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${filename}`;
-              if (cdnSnippetEl) cdnSnippetEl.value = cdnUrl;
-              if (copyUsageBtn) copyUsageBtn.disabled = false;
-            }
-          } catch (e) {
-            console.warn('Failed to build CDN snippet', e);
-          }
-
-        } catch (err) {
-          console.error('Failed to fetch icon', err);
-        }
-      });
-      iconList.appendChild(div);
-    });
-    iconList.classList.remove("hidden");
   }
-
-  // do not show lists on mount; they'll be shown when inputs receive focus
-
-  categoryInput.addEventListener("input", () => {
-    const val = categoryInput.value.trim();
-    if (!val) {
-      showCategoryList(categories);
-      return;
+  function renderGrid() {
+    const results = filterIcons(icons, $('search').value, category);
+    $('resultCount').textContent = `${results.length} icon${results.length === 1 ? '' : 's'}`;
+    $('collectionTitle').textContent = category === 'all' ? 'All icons' : categoryNames[category] || displayName(category);
+    $('emptyState').hidden = results.length > 0;
+    $('clearSearch').hidden = !$('search').value;
+    const fragment = document.createDocumentFragment();
+    for (const icon of results) {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'icon-card';
+      card.dataset.filename = icon.filename;
+      card.setAttribute('aria-label', `Preview ${displayName(icon.name)} (${categoryNames[icon.category] || icon.category})`);
+      card.setAttribute('aria-pressed', String(selected?.filename === icon.filename));
+      const img = document.createElement('img');
+      img.dataset.themedIcon = icon.name;
+      img.src = variantAsset(icon, document.documentElement.dataset.theme).path;
+      img.alt = ''; img.width = 36; img.height = 36; img.loading = 'lazy';
+      const name = document.createElement('span');
+      name.textContent = displayName(icon.name);
+      const stage = document.createElement('span');
+      stage.className = 'icon-stage';
+      stage.append(img);
+      card.append(stage, name);
+      card.addEventListener('click', () => selectIcon(icon, true));
+      fragment.append(card);
     }
-    const filtered = categories.filter(c => c.toLowerCase().includes(val.toLowerCase()));
-    showCategoryList(filtered);
-  });
-
-  // Show full list on focus, hide on blur (short timeout to allow clicks)
-  categoryInput.addEventListener('focus', () => {
-    const val = categoryInput.value.trim();
-    if (!val) showCategoryList(categories);
-    else showCategoryList(categories.filter(c => c.toLowerCase().includes(val.toLowerCase())));
-  });
-  categoryInput.addEventListener('blur', () => {
-    setTimeout(() => categoryList.classList.add('hidden'), 150);
-  });
-
-  iconInput.addEventListener("input", () => {
-    const cat = categoryValue.value;
-    if (!cat || !manifest[cat]) return;
-    const list = manifest[cat].map(i => ({ name: i.name, path: i.path, filename: i.filename || i.name }));
-    showIconList(list, iconInput.value);
-  });
-
-  // Show icons on focus (if a category is selected), hide on blur
-  iconInput.addEventListener('focus', () => {
-    const cat = categoryValue.value;
-    if (!cat || !manifest[cat]) {
-      iconList.classList.add('hidden');
-      return;
-    }
-    const list = manifest[cat].map(i => ({ name: i.name, path: i.path, filename: i.filename || i.name }));
-    showIconList(list, iconInput.value);
-  });
-  iconInput.addEventListener('blur', () => {
-    setTimeout(() => iconList.classList.add('hidden'), 150);
-  });
-
-  // hide lists when clicking outside
-  document.addEventListener('click', (e) => {
-    const target = e.target;
-    if (!categoryList.contains(target) && target !== categoryInput) categoryList.classList.add('hidden');
-    if (!iconList.contains(target) && target !== iconInput) iconList.classList.add('hidden');
-  });
-
-  copyBtn.addEventListener("click", async () => {
-    let cleaned = sanitizeSVG(currentSVGText);
-    await navigator.clipboard.writeText(cleaned);
-    copyBtn.textContent = "Copied!";
-    setTimeout(() => (copyBtn.textContent = "Copy SVG"), 800);
-  });
-
-  if (copyUsageBtn) {
-    copyUsageBtn.addEventListener('click', async () => {
-      const text = cdnSnippetEl?.value || '';
-      if (!text) return;
-      await navigator.clipboard.writeText(text);
-      const prev = copyUsageBtn.textContent;
-      copyUsageBtn.textContent = 'Copied!';
-      setTimeout(() => (copyUsageBtn.textContent = prev), 800);
-    });
+    $('iconGrid').replaceChildren(fragment);
   }
-
-  downloadBtn.addEventListener("click", () => {
-    let cleaned = sanitizeSVG(currentSVGText);
-    const blob = new Blob([cleaned], { type: "image/svg+xml" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    // try to get filename from iconValue path or use iconInput name
-    const filenameFromValue = iconValue.value ? (iconValue.value.split('/').pop() || 'icon.svg') : null;
-    a.download = filenameFromValue || (iconInput.value ? `${iconInput.value}.svg` : "icon.svg");
-    a.click();
+  function updateSnippet() {
+    if (!selected) return;
+    const isSVG = $('format').value === 'svg';
+    $('code').value = isSVG ? (svgText || '') : snippet(selected, $('format').value, Number($('size').value), exportMode);
+    $('copyCode').disabled = !$('code').value;
+    $('copyCode').textContent = isSVG ? 'Copy SVG ⧉' : 'Copy snippet ⧉';
+    $('previewImage').width = Number($('size').value);
+    $('previewImage').height = Number($('size').value);
+    $('previewDimensions').textContent = `${$('size').value} × ${$('size').value} px`;
+  }
+  async function selectIcon(icon, moveFocus = false) {
+    selected = icon; svgText = null;
+    const currentRequest = ++request;
+    const asset = variantAsset(icon, exportMode);
+    $('downloadSvg').disabled = true;
+    $('assetStatus').textContent = 'Loading SVG…';
+    $('selectedName').textContent = displayName(icon.name);
+    $('selectedCategory').textContent = categoryNames[icon.category] || icon.category;
+    $('selectedPath').textContent = asset.filename;
+    $('preview').dataset.variant = exportMode;
+    $('previewImage').src = asset.path;
+    $('previewImage').alt = `${displayName(icon.name)} logo for ${exportMode} backgrounds`;
+    $('previewImage').onerror = () => { $('assetStatus').textContent = 'Preview unavailable. Try another icon.'; };
+    document.querySelectorAll('.icon-card').forEach(card => card.setAttribute('aria-pressed', String(card.dataset.filename === icon.filename)));
+    updateSnippet();
+    if (moveFocus && matchMedia('(max-width: 1100px)').matches) $('selectedName').focus({ preventScroll: false });
+    try {
+      let source = window.ICON_SVG_DATA?.[asset.filename];
+      if (typeof source !== 'string') {
+        const response = await fetch(asset.path);
+        if (!response.ok) throw new Error('Icon request failed');
+        source = await response.text();
+      }
+      const text = cleanSVG(source);
+      const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+      if (doc.querySelector('parsererror') || doc.documentElement.localName !== 'svg') throw new Error('Invalid SVG');
+      if (currentRequest !== request) return;
+      svgText = text;
+      $('downloadSvg').disabled = false;
+      updateSnippet();
+      $('assetStatus').textContent = `${exportMode === 'dark' ? 'Dark' : 'Light'} variant · SVG · Scales to any size`;
+    } catch {
+      if (currentRequest === request) {
+        $('assetStatus').textContent = 'This icon could not be loaded. Please select it again or refresh the page.';
+      }
+    }
+  }
+  async function copy(text, message) {
+    if (!text) return;
+    const copied = await copyText(text, navigator.clipboard, value => {
+      const field = document.createElement('textarea');
+      const previousFocus = document.activeElement;
+      field.value = value;
+      field.setAttribute('aria-label', 'Copy text');
+      field.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;';
+      document.body.append(field);
+      field.focus(); field.select();
+      try { return document.execCommand('copy'); }
+      finally { field.remove(); previousFocus?.focus({ preventScroll: true }); }
+    });
+    if (copied) notify(message);
+    else {
+      $('code').value = text; $('code').focus(); $('code').select();
+      notify('Clipboard unavailable. Copy the selected text with Ctrl+C or ⌘C.');
+    }
+  }
+  $('copyCode').addEventListener('click', () => copy($('code').value, $('format').value === 'svg' ? 'SVG copied to clipboard' : 'Snippet copied to clipboard'));
+  $('downloadSvg').addEventListener('click', () => {
+    if (!svgText || !selected) return;
+    const url = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${selected.name}-${exportMode}.svg`;
+    document.body.append(link); link.click(); link.remove();
+    // Give browsers time to hand off the Blob to their download manager.
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+    notify('SVG download started');
   });
-}
-
-mount();
+  $('search').addEventListener('input', renderGrid);
+  $('clearSearch').addEventListener('click', () => { $('search').value = ''; renderGrid(); $('search').focus(); });
+  $('resetFilters').addEventListener('click', () => { category = 'all'; $('search').value = ''; renderCategories(); renderGrid(); $('search').focus(); });
+  $('format').addEventListener('change', updateSnippet);
+  $('size').addEventListener('change', updateSnippet);
+  async function setExportMode(value) {
+    exportMode = value === 'dark' ? 'dark' : 'light';
+    $('exportVariant').value = exportMode;
+    $('quickstartVariant').value = exportMode;
+    try { localStorage.setItem('icon-export-variant', exportMode); } catch { /* Preference storage is optional. */ }
+    if (selected) await selectIcon(selected);
+  }
+  $('exportVariant').addEventListener('change', () => setExportMode($('exportVariant').value));
+  $('quickstartVariant').addEventListener('change', () => setExportMode($('quickstartVariant').value));
+  setExportMode(exportMode);
+  document.addEventListener('keydown', event => {
+    const editing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
+    if ((event.key === '/' && !editing) || ((event.ctrlKey || event.metaKey) && event.key === 'k')) { event.preventDefault(); $('search').focus(); }
+    if (event.key === 'Escape' && document.activeElement === $('search')) { $('search').value = ''; renderGrid(); }
+  });
+  $('totalIcons').textContent = icons.length;
+  $('totalCategories').textContent = categories.length;
+  renderCategories(); renderGrid();
+  if (icons.length) selectIcon(icons.find(icon => icon.name === 'react') || icons[0]);
+})();
