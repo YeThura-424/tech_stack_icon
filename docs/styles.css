@@ -15,7 +15,7 @@
 :root[data-theme="dark"] .hero h1 .hero-highlight{background-image:linear-gradient(110deg,#bce9f4,var(--turquoise),#bce9f4)}
 .hero-copy>p{animation:hero-reveal .75s .28s both}
 .hero-meta{animation:hero-reveal .75s .4s both}
-.art-tile{animation:icon-float 4.8s ease-in-out both}
+.art-tile{animation:icon-float 4.8s ease-in-out infinite}
 .tile-react{--tilt:-12deg}
 .tile-docker{--tilt:10deg;animation-delay:.1s}
 .tile-figma{--tilt:6deg;animation-delay:.2s}
