@@ -51,8 +51,8 @@
 .preview>span{color:#fff;background:#11406e;padding:2px 6px;border-radius:3px}
 
 /* Actual icon variants use matching surfaces; export mode is independent. */
-.icon-card .icon-stage{background:#f3f8fb;border-color:#d4e5ec}
-:root[data-theme="dark"] .icon-card .icon-stage{background:#11406e;border-color:#288598}
+.icon-card .icon-stage{background:#f5fafc;border-color:#d4e5ec}
+:root[data-theme="dark"] .icon-card .icon-stage{background:#0b2035;border-color:#288598}
 .preview[data-variant="light"]{background:#f3f8fb;border-color:#d4e5ec}
 .preview[data-variant="dark"]{background:#11406e;border-color:#288598}
 .variant-controls{margin-bottom:14px}
